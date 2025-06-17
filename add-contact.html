@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Add Contact</title>
 </head>
 <body>
     <br/>
-    <form action="">
+    <form id="editForm">
         <label for="firstname">First name</label>
         <input type="text" name="firstname" id="firstname"><br/>
         <label for="lastname">Last name</label>
@@ -19,41 +19,44 @@
         <label for="avatar">Select file</label><br/>
         <input type="file" name="avatar" id="avatar"><br/>
         <button type="submit" id="submitForm">Submit</button>
-
     </form>
     <br/>
     <button id="homeLink" type="button">Home</button>
+
     <script src="config.js"></script>
     <script>
         document.getElementById("submitForm").addEventListener('click', submitForm);
-        document.getElementById("homeLink").addEventListener('click',homeLink);
+        document.getElementById("homeLink").addEventListener('click', homeLink);
 
-        function submitForm(e){
+        function submitForm(e) {
             e.preventDefault();
 
-            const form = new FormData(document.querySelector('#editForm'));
+            const form = new FormData(document.getElementById('editForm'));
             form.append('apiKey', apiKey);
 
-            fetch(rootPath + 'controller/insert-contact/',{
+            fetch(rootPath + 'controller/insert-contact/', {
                 method: 'POST',
-                headers: {'Accept': 'application/json, *.*'},
+                headers: {
+                    'Accept': 'application/json, *.*'
+                },
                 body: form
             })
-            .then(function(response){
-                return response.text
-            })
-            .then(function(data){
-                if(data == "1"){
+            .then(response => response.text())
+            .then(data => {
+                if (data == "1") {
                     alert("Contact added");
                     homeLink();
-
-                }else{
-                    alert(data);
-                    homeLink();
+                } else {
+                    alert("Error: " + data);
                 }
             })
+            .catch(error => {
+                alert("Failed to submit contact.");
+                console.error("Error:", error);
+            });
         }
-        function homeLink(){
+
+        function homeLink() {
             window.open("index.html", "_self");
         }
     </script>

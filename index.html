@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conatct Book</title>
+    <title>Contact Book</title>
 </head>
 <body onload="fetchContacts()">
     <div id="table">Contacts Loading...</div>
@@ -17,36 +17,41 @@
 
         function fetchContacts(){
             fetch(rootPath + "controller/get-contacts/")
-            .then(function(response){
-                return response.json();
-            })
-            .then(function(data){
-                console.log(data);
-            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    displayOutput(data);
+                })
+                .catch(error => {
+                    document.getElementById("table").innerHTML = "Error loading contacts.";
+                    console.error("Fetch error:", error);
+                });
         }
 
         function displayOutput(data){
-            output = "<table>";
+            let output = "<table>";
 
-                for(a in data){
-                    output += `
-                    <tr onclick="editContact(${data[a].id})">
-                        <td><img src="${rootPath}controller/uploads/${data[a].avatar}" width="40"/></td>
-                        <td><h5>${data[a].firstname}</h5></td>
-                        <td><h5>${data[a].lastname}</h5></td>
-                        </tr>
-                    `
-                }
-                output += "</table>";
-                document.getElementById("table").innerHTML = output;
+            data.forEach(contact => {
+                output += `
+                    <tr onclick="editContact(${contact.id})">
+                        <td><img src="${rootPath}controller/uploads/${contact.avatar}" width="40"/></td>
+                        <td><h5>${contact.firstname}</h5></td>
+                        <td><h5>${contact.lastname}</h5></td>
+                    </tr>
+                `;
+            });
+
+            output += "</table>";
+            document.getElementById("table").innerHTML = output;
         }
+
         function addContact(){
             window.open("add-contact.html", "_self");
         }
-        function editContact(id){
-            window.open("edit-contact.html?id="+ id, "_self");
-        }
 
+        function editContact(id){
+            window.open("edit-contact.html?id=" + id, "_self");
+        }
     </script>
 </body>
 </html>
